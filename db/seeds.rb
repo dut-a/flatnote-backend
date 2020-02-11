@@ -19,7 +19,7 @@ puts "Begin: Adding Notes"
 20.times do
   Note.create(
     title: Faker::Lorem.sentence,
-    notes: Faker::Lorem.paragraphs.join(" "),
+    details: Faker::Lorem.paragraphs.join(" "),
     tags: "JS, Java, Android, React, Redux, CSS",
     user_id: User.all.sample.id
   )

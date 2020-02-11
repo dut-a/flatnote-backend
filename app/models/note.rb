@@ -4,7 +4,7 @@ class Note < ApplicationRecord
   accepts_nested_attributes_for :user, allow_destroy: true
 
   # Validations
-  validates :title, :notes, {:presence => true}
+  validates :title, :details, {:presence => true}
   validates :tags, {:presence => true, :allow_blank => true}
 
 end
