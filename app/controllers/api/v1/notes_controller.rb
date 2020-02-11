@@ -34,8 +34,47 @@ class Api::V1::NotesController < ApplicationController
     if note.valid?
       render json: { note: NoteSerializer.new(note) }, status: :created
     else
-      render json: { error: 'Unable to create the note' }, status: :not_acceptable
+      render json: { 
+        "errors": note.errors,
+        "error_codes": note.errors.keys.map { |f| "#{f.upcase}_ERROR" },
+        "error": 'Unable to create the note' }, status: :not_acceptable
     end
+  end
+
+  def update
+    note = find_note
+    if note
+      # Note found, proceed with other operations on it...
+      note.update(note_params)
+      if note.valid?
+        result = { json: {
+            "status": 200,
+            "message": "Note updated successfully",
+            "note": note
+          }
+        }
+      else
+        result = { json: { "status": 400, "message": "Bad request" } }
+      end
+    else
+      result = { json: get_404_error_msg }
+    end
+    render(result)
+  end
+
+  def destroy
+    note = find_note
+    if note
+      # Note found, proceed with other operations on it...
+      if note.destroy
+        final_json = { json: { "status": 204, "message": "Note titled '#{note.title}', successfully deleted." } }
+      else
+        final_json = { json: get_404_error_msg("Unable to delete the note '#{note.title}'.") }
+      end
+    else
+      final_json = { json: get_404_error_msg }
+    end
+    render(final_json)
   end
 
   private
